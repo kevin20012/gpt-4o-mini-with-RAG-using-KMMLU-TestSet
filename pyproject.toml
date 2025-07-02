@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "junhyung_wrtn"
+version = "0.1.0"
+description = "wrtn_assignment"
+authors = ["Junhyung Park <kevin2001112@gmail.com>"]
+packages = [{include = "junhyung_wrtn"}]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.13"
+openai = "^1.25.0"
+datasets = "3.6.0"
+huggingface-hub = "0.33.1"
+langchain-huggingface = "0.3.0"
+langchain-core = "0.3.66"
+langchain-community = "0.3.26"
+langchain-openai = "0.3.27"
+scikit-learn = "1.7.0"
+faiss-cpu = "1.11.0"
+fsspec = "2025.3.0"
+tiktoken = "^0.7.0"
+python-dotenv = "^1.0.1"
+tqdm = "^4.66.4"
+pandas = "^2.2.2"
+
+[build-system]
+requires = ["poetry-core>=1.8.0"]
+build-backend = "poetry.core.masonry.api"
