@@ -31,7 +31,7 @@ for i, row in tqdm(enumerate(df_test.itertuples()), desc="Make Prompt", total=le
         "question": question,
         "choice": choice
     }
-    prompt = get_prompt(query_dict, top_k=5, method='normal')
+    prompt = get_prompt(query_dict, top_k=12, method='normal')
     task = {
         "custom_id": f"task_{i}",
         "method": "POST",
@@ -56,7 +56,7 @@ file_id = response.id
 batch_job = client.batches.create(
     input_file_id=file_id,
     endpoint="/v1/chat/completions",
-    completion_window="24h"
+    completion_window="24h",
 )
 
 # 배치 작업 기다리기

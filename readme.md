@@ -3,8 +3,81 @@
 ```shell
 cp .env.example .env
 docker build -t wrtn_assignment .
-docker run -it wrtn_assignment
+docker run -it -v "$(pwd)":/app wrtn_assignment
 ```
+### 실행 결과
+아래 결과가 나온 요청 파일과 결과 파일은 루트 디렉토리에 **batch_requests.jsonl**,**batch_output.jsonl**에 있습니다.
+```shell
+🚀 데이터 구축
+✅ JSON 파싱 -> CSV
+json -> csv: 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1683/1683 [00:02<00:00, 793.36it/s]
+✅ 임베딩벡터 생성 -> FAISS 인덱싱 저장
+Processing documents: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 279/279 [31:10<00:00,  6.70s/it]
+🚀 평가
+🚀 프롬프트 만드는 중...
+Make Prompt: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 200/200 [01:33<00:00,  2.14it/s]
+Batch job status: validating
+Batch job status: in_progress
+Batch job status: in_progress
+Batch job status: in_progress
+Batch job status: in_progress
+Batch job status: in_progress
+Batch job status: in_progress
+Batch job status: in_progress
+Batch job status: in_progress
+Batch job status: in_progress
+Batch job status: in_progress
+Batch job status: in_progress
+Batch job status: in_progress
+Batch job status: in_progress
+Batch job status: in_progress
+Batch job status: in_progress
+Batch job status: in_progress
+Batch job status: in_progress
+Batch job status: in_progress
+Batch job status: in_progress
+Batch job status: in_progress
+Batch job status: in_progress
+Batch job status: in_progress
+Batch job status: in_progress
+Batch job status: in_progress
+Batch job status: in_progress
+Batch job status: in_progress
+Batch job status: in_progress
+Batch job status: in_progress
+Batch job status: in_progress
+Batch job status: in_progress
+Batch job status: in_progress
+Batch job status: in_progress
+Batch job status: in_progress
+Batch job status: in_progress
+Batch job status: in_progress
+Batch job status: in_progress
+Batch job status: in_progress
+Batch job status: in_progress
+Batch job status: in_progress
+Batch job status: in_progress
+Batch job status: in_progress
+Batch job status: in_progress
+Batch job status: finalizing
+Batch job status: finalizing
+Batch job status: finalizing
+Batch job status: finalizing
+Batch job status: finalizing
+Batch job status: finalizing
+Batch job status: finalizing
+Batch job status: finalizing
+Batch job status: finalizing
+Batch job status: finalizing
+Batch job completed.
+Accuracy: 0.425
+```
+https://github.com/daekeun-ml/evaluate-llm-on-korean-dataset/blob/main/DETAILED_RESULTS.md 로부터 KMMLU(criminal_law) 테스테셋에서의 결과를 얻고 이와 본 과제에서의 결과와 비교
+||KMMLU(Criminal_law)|
+|:--:|:--:|
+|0-shot|37|
+|5-shot|37.5|
+|with RAG (ours)|**42.5**|
 
 ## 코드설명
 ### 데이터 전처리 및 구축
@@ -45,7 +118,9 @@ python get_index.py
 agent.py 에는 LLM으로부터 RAG를 사용하여 답변을 얻기 위한 4가지 함수가 정의되어있습니다.  
 또한 실행 시 예시로 첫번째 테스트셋에 대한 답변을 얻을 수 있습니다.
 - **get_docs** : FAISS 인덱싱을 사용하여 데이터셋의 질문과 보기를 바탕으로 코사인 유사도 기준 가장 가까운 top_k개의 문서만을 가져옵니다.
-- **get_prompt** : KMMLU데이터셋의 질문과 보기를 사용하여, **get_docs**로 top_k개의 유사한 문서를 가져옵니다. 얻어온 문서는 질문과 보기와 함께 아래와 같은 프롬프트로 만든 뒤 반환합니다.
+- **get_prompt** : KMMLU데이터셋의 질문과 보기를 사용하여, **get_docs**로 top_k개의 유사한 문서를 가져옵니다. 얻어온 문서는 질문과 보기와 함께 아래와 같은 프롬프트로 만든 뒤 반환합니다.  
+    - **top_k**: 상위 몇개의 문서를 가져올지 결정
+    - **method**: **normal** -> 기본 retriever, **multi-query** -> multi-query retriever 사용
     ```
     system = "다음 문서를 참고하여 주어진 4가지 보기를 잘 보고 질문에 맞는 답의 숫자를 하나만 고르세요. 가능한 답변: 1,2,3,4\n"
     content = f"문서:\n{docs}\n질문:\n{question}\n보기:\n{choice}\n답변:"
@@ -62,7 +137,8 @@ python agent.py
 ```
 #### 🔥 Open AI Batch API를 사용해서 테스트 데이터 전체에 대한 결과 얻기 - 소요시간 계산 X
 evaluation.py는 agent.py에서 정의된 함수를 바탕으로 KMMLU-criminal_law 테스트 셋 전체에 대한 결과를 Batch API를 이용해 답변을 얻습니다.  
-실행시 루트 디렉토리에 **batch_requests.jsonl**(요청파일), **batch_output.jsonl**(결과파일) 파일을 얻을 수 있습니다.
+실행시 루트 디렉토리에 **batch_requests.jsonl**(요청파일), **batch_output.jsonl**(결과파일) 파일을 얻을 수 있습니다.  
+**Batch API의 토큰 한계 때문에 top_k: 12로 설정하였으며, 프롬프트 생성 속도 때문에 method: normal로 설정하였습니다.**
 ```shell
 python evalution.py
 ```

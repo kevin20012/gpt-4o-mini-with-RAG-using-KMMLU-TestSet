@@ -13,7 +13,7 @@ data = loader.load()
 
 embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
 
-batch_size = 300  # 배치 크기를 적절히 설정
+batch_size = 200  # 배치 크기를 적절히 설정
 num_batches = len(data) // batch_size + (1 if len(data) % batch_size != 0 else 0)
 
 # 배치별로 FAISS에 임베딩 추가
@@ -31,7 +31,6 @@ for i in tqdm(range(num_batches), desc="Processing documents"):
             metadata=doc.metadata
         )
         processed_batch.append(new_doc)
-    # print(f"Batch {i} - First doc: {processed_batch[0].page_content[:50]}...")
     
     # 각 배치에 대해 임베딩을 생성하고, FAISS 인덱스에 추가
     if vectorstore is None:

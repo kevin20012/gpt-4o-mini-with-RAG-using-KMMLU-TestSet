@@ -1,5 +1,6 @@
 __pycache__
 .DS_Store
+.env
 DB/faiss_law
 data/corpus/law_csv/*.csv
 data/corpus/law_json_backup
