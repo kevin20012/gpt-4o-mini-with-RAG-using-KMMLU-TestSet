@@ -18,57 +18,9 @@ Processing documents: 100%|█████████████████�
 Make Prompt: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 200/200 [01:33<00:00,  2.14it/s]
 Batch job status: validating
 Batch job status: in_progress
-Batch job status: in_progress
-Batch job status: in_progress
-Batch job status: in_progress
-Batch job status: in_progress
-Batch job status: in_progress
-Batch job status: in_progress
-Batch job status: in_progress
-Batch job status: in_progress
-Batch job status: in_progress
-Batch job status: in_progress
-Batch job status: in_progress
-Batch job status: in_progress
-Batch job status: in_progress
-Batch job status: in_progress
-Batch job status: in_progress
-Batch job status: in_progress
-Batch job status: in_progress
-Batch job status: in_progress
-Batch job status: in_progress
-Batch job status: in_progress
-Batch job status: in_progress
-Batch job status: in_progress
-Batch job status: in_progress
-Batch job status: in_progress
-Batch job status: in_progress
-Batch job status: in_progress
-Batch job status: in_progress
-Batch job status: in_progress
-Batch job status: in_progress
-Batch job status: in_progress
-Batch job status: in_progress
-Batch job status: in_progress
-Batch job status: in_progress
-Batch job status: in_progress
-Batch job status: in_progress
-Batch job status: in_progress
-Batch job status: in_progress
-Batch job status: in_progress
-Batch job status: in_progress
-Batch job status: in_progress
-Batch job status: in_progress
+...
 Batch job status: finalizing
-Batch job status: finalizing
-Batch job status: finalizing
-Batch job status: finalizing
-Batch job status: finalizing
-Batch job status: finalizing
-Batch job status: finalizing
-Batch job status: finalizing
-Batch job status: finalizing
-Batch job status: finalizing
+...
 Batch job completed.
 Accuracy: 0.425
 ```
