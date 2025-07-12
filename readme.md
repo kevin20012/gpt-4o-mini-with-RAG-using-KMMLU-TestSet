@@ -1,9 +1,9 @@
-# WRTN RAG 과제
+# Legal Agent Using RAG (Retrieval-Augmented Generation)
 ## 실행방법
 ```shell
 cp .env.example .env
-docker build -t wrtn_assignment .
-docker run -it -v "$(pwd)":/app wrtn_assignment
+docker build -t agent .
+docker run -it -v "$(pwd)":/app agent
 ```
 ### 실행 결과
 아래 결과가 나온 요청 파일과 결과 파일은 루트 디렉토리에 **batch_requests.jsonl**,**batch_output.jsonl**에 있습니다.
@@ -72,7 +72,7 @@ Batch job status: finalizing
 Batch job completed.
 Accuracy: 0.425
 ```
-https://github.com/daekeun-ml/evaluate-llm-on-korean-dataset/blob/main/DETAILED_RESULTS.md 로부터 KMMLU(criminal_law) 테스테셋에서의 결과를 얻고 이와 본 과제에서의 결과와 비교
+https://github.com/daekeun-ml/evaluate-llm-on-korean-dataset/blob/main/DETAILED_RESULTS.md 로부터 KMMLU(criminal_law) 테스테셋에서의 결과를 얻고 비교
 ||KMMLU(Criminal_law)|
 |:--:|:--:|
 |0-shot|37|
@@ -100,14 +100,14 @@ python get_law_json.py
 ########################################################
 # 아래 코드부터 총 소요 시간에 포함됩니다.
 ######################################################## 
-# 🚀 json 파싱 - 예상 소요시간 10초
+# 🚀 json 파싱
 # 다운로드 받은 법령 json 파일로부터 조문 내용을 파싱하기 위한 코드입니다.
 # 조문 단위 내의 조문 내용, 항, 호를 알맞게 처리하고, 각 조문 내용 앞에는 법령 이름을 모두 붙여주었습니다.
 # 즉, "법령이름:\n제1조 ~~ \n1. ~~ \n2. ~~ ..." 과 같이 csv의 각 행에 저장되도록하였습니다.
 # 각 법령에 해당하는 csv는 data/corpus/law_csv에 저장되며, 모든 법령의 내용을 합친 csv는 data/corpus/law_corpus.csv로 저장됩니다.
 python json_to_csv.py
 
-# 🚀 인덱싱 - 예상 소요시간 30분
+# 🚀 인덱싱
 # 만들어진 law_corpus.csv 파일로부터 text-embedding-3-small 임베딩모델을 사용하여 각 문자를 임베딩벡터로 변환한 뒤, 각 벡터들을 효율적으로 인덱싱하기 위해 FAISS를 사용합니다.
 # 만들어진 인덱싱파일은 DB/faiss_law에 저장됩니다.
 python get_index.py
@@ -135,7 +135,7 @@ agent.py 에는 LLM으로부터 RAG를 사용하여 답변을 얻기 위한 4가
 ```shell
 python agent.py
 ```
-#### 🔥 Open AI Batch API를 사용해서 테스트 데이터 전체에 대한 결과 얻기 - 소요시간 계산 X
+#### 🔥 Open AI Batch API를 사용해서 테스트 데이터 전체에 대한 결과 얻기
 evaluation.py는 agent.py에서 정의된 함수를 바탕으로 KMMLU-criminal_law 테스트 셋 전체에 대한 결과를 Batch API를 이용해 답변을 얻습니다.  
 실행시 루트 디렉토리에 **batch_requests.jsonl**(요청파일), **batch_output.jsonl**(결과파일) 파일을 얻을 수 있습니다.  
 **Batch API의 토큰 한계 때문에 top_k: 12로 설정하였으며, 프롬프트 생성 속도 때문에 method: normal로 설정하였습니다.**
